@@ -4,7 +4,7 @@ const app = express();
 const usersRouter = require("./routes/usersRouter");
 
 app.set("view engine", "ejs");
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));  //enables body data to be parsed in usersController.js middleware clean sanitize 
 app.use("/", usersRouter);
 
 const PORT = process.env.PORT || 3000;
