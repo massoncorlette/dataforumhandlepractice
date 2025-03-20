@@ -20,6 +20,7 @@ exports.usersCreatePost = (req, res) => {
   res.redirect("/");
 };
 
+// for validating user submission from forum
 
 // This just shows the new stuff we're adding to the existing contents
 const { body, validationResult } = require("express-validator");
@@ -36,6 +37,7 @@ const validateUser = [
     .isLength({ min: 1, max: 10 }).withMessage(`Last name ${lengthErr}`),
 ];
 
+
 // We can pass an entire array of middleware validations to our controller.
 exports.usersCreatePost = [
   validateUser,
@@ -49,6 +51,33 @@ exports.usersCreatePost = [
     }
     const { firstName, lastName } = req.body;
     usersStorage.addUser({ firstName, lastName });
+    res.redirect("/");
+  }
+];
+
+// for updating user
+exports.usersUpdateGet = (req, res) => {
+  const user = usersStorage.getUser(req.params.id);
+  res.render("updateUser", {
+    title: "Update user",
+    user: user,
+  });
+};
+
+exports.usersUpdatePost = [
+  validateUser,
+  (req, res) => {
+    const user = usersStorage.getUser(req.params.id);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).render("updateUser", {
+        title: "Update user",
+        user: user,
+        errors: errors.array(),
+      });
+    }
+    const { firstName, lastName } = req.body;
+    usersStorage.updateUser(req.params.id, { firstName, lastName });
     res.redirect("/");
   }
 ];
